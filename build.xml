@@ -1,7 +1,5 @@
-<project name="CSV Store" default="compile" basedir=".">
-    <description>
-        CSV Store build script
-    </description>
+<project name="CSV2Mongo" default="usage" basedir=".">
+    <description>CSV2Mongo build script</description>
     <!-- set global properties for this build -->
     <property name="dir.build" value="build"/>
     <property name="dir.build.java" value="${dir.build}"/>
@@ -18,6 +16,10 @@
         <fileset dir="${dir.lib}"><include name="*.jar"/></fileset>
     </path>
   
+
+    <!-- ******************************************************************* -->
+    <!-- Compile all java files.                                             -->
+    <!-- ******************************************************************* -->
     <target name="compile" depends="clean"  description="Compile the script">
     <!-- Create the build directory structure used by compile -->
         <mkdir dir="${dir.build.java}"/>
@@ -32,6 +34,9 @@
         	</javac>
     </target>
     
+    <!-- ******************************************************************* -->
+    <!-- Clean all build files.                                              -->
+    <!-- ******************************************************************* -->
     <target name="clean" description="Clean up" >
         <delete dir="${dir.build.java}"/>
     </target>
@@ -48,4 +53,31 @@
     <target name="input-runargs" unless="args" description="prompts for command line arguments if necessary">
   <input addProperty="args" message="Type the desired csv file (under ${csv.lib}/): "/>
 </target>
+
+    <!-- ******************************************************************* -->
+    <!-- Create the jar file.                                                -->
+    <!-- ******************************************************************* -->
+
+    <target name="jar" depends="compile">
+        <jar destfile="CSV2Mongo.jar" basedir="${dir.build.java}"></jar>
+    </target>
+
+    <!-- ******************************************************************* -->
+    <!-- Print the usage.                                                    -->
+    <!-- ******************************************************************* -->
+
+    <target name="usage">
+<echo>
+----------------------------------------
+
+- Clean the source tree ............................ clean
+
+- Compile the source code .......................... compile
+
+- Generate the jar file ............................ jar
+
+----------------------------------------
+</echo>
+    </target>
+
 </project>

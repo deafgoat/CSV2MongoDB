@@ -32,7 +32,6 @@ import java.io.IOException;
 /** 
  * CSVIterator.java
  * Purpose: This script parses CSV files and stores the entries in a mongodb collection.
- * 
  */
 
 public class CSVStore {
@@ -71,8 +70,9 @@ public class CSVStore {
 	private HashMap<String,Integer> getHeaderMappings() {
 		HashMap<String,Integer> mapping = new HashMap<String,Integer> ();
 		String [] fields = iterator.getFields();
-		for (int i = 0; i < fields.length; i++)
+		for (int i = 0; i < fields.length; i++) {
 			mapping.put(fields[i].trim(), i);
+		}
 		return mapping;
 	}
 
@@ -91,35 +91,30 @@ public class CSVStore {
 					if (field >= record.length) {
 						System.out.println("Encountered blank line in file on line: " + this.iterator.getLineNumber());
 			    		strVal = " ";
-					}
-					else
+					} else {
 						strVal = record[field].trim();
+					}
 					try {
 						numVal = Double.parseDouble(strVal);
 						doc.put(fieldSet.get(0).replace(" ","-"), numVal);
-					} 
-					catch (NumberFormatException nfe) {
+					}  catch (NumberFormatException nfe) {
 						doc.put(fieldSet.get(0).replace(" ","-"), strVal);
 					}
-				}
-
-				else {
+				} else {
 					// Insert each sub document based on grouping
-
 					BasicDBObject subDoc = new BasicDBObject();
 					for (int i = 0; i < fieldSet.size(); i++) {
-						int field = mappings.get(fieldSet.get(0));
+						int field = mappings.get(fieldSet.get(i));
 						if (field >= record.length) {
 				    		System.out.println("Encountered blank line in file: " + this.iterator.getLineNumber());
 				    		strVal = " ";
-						}
-						else
+						} else {
 							strVal = record[field].trim();
+						}
 						try {
 							numVal = Double.parseDouble(strVal);
 							subDoc.put(fieldSet.get(i).replace(" ","-"), numVal);
-						} 
-						catch (NumberFormatException nfe) {
+						}  catch (NumberFormatException nfe) {
 							subDoc.put(fieldSet.get(i).replace(" ","-"), strVal);
 						}
 					}
@@ -151,16 +146,16 @@ public class CSVStore {
 					if (allWords.get(n) != null) {
 						int cur = allWords.get(n);
 						allWords.put(n, cur+1);
-					}
-					else
+					} else {
 						allWords.put(n, 1);
+					}
 				}
 			}
 		}
 
-		int size = fields.length;
-		int mapIndex = 0;
 		int index = 0;
+		int mapIndex = 0;
+		int size = fields.length;
 		String curWord = "";
 
 		// Perform grouping
@@ -169,8 +164,9 @@ public class CSVStore {
 			int len = curStr.length;
 			int i = 0;
 			while (i < len) {
-				if (allWords.get(curStr[i]) != null)
+				if (allWords.get(curStr[i]) != null) {
 					mappings.put(index, curStr[i]);
+				}
 				i += 1;
 			}
 			index += 1;
@@ -179,8 +175,9 @@ public class CSVStore {
 		// Create grouping echelon
 		Map<String,ArrayList<String>> retMap = new HashMap<String,ArrayList<String>>();
 		for (int i = 0; i < size; i++) {
-			if (!retMap.containsKey(mappings.get(i)))
+			if (!retMap.containsKey(mappings.get(i))) {
 				retMap.put(mappings.get(i).trim(), new ArrayList<String> ());
+			}
 			retMap.get(mappings.get(i).trim()).add(fields[i].trim());
 		}
 		return retMap;
