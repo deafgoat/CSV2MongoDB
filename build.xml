@@ -1,0 +1,51 @@
+<project name="CSV Store" default="compile" basedir=".">
+    <description>
+        CSV Store build script
+    </description>
+    <!-- set global properties for this build -->
+    <property name="dir.build" value="build"/>
+    <property name="dir.build.java" value="${dir.build}"/>
+    <property name="dir.src" value="src"/>
+    <property name="dir.src.java" value="src"/>
+    <property name="dir.lib" value="lib"/>
+    <property name="csv.lib" value="csv"/>
+    
+    <path id="classpath.all">
+      <fileset dir="${dir.lib}"><include name="*.jar"/></fileset>
+    </path>
+    <path id="classpath.cp">
+    	<pathelement location="${dir.build.java}"/>
+        <fileset dir="${dir.lib}"><include name="*.jar"/></fileset>
+    </path>
+  
+    <target name="compile" depends="clean"  description="Compile the script">
+    <!-- Create the build directory structure used by compile -->
+        <mkdir dir="${dir.build.java}"/>
+            <javac  destdir="${dir.build.java}"
+                    debug="true" encoding="UTF-8"
+                    classpathref="classpath.cp"
+                    includeantruntime="false"
+                    debuglevel="lines,vars,source">
+	            <src path="${dir.src.java}"/>
+	            <compilerarg value="-Xlint:all,-fallthrough"/>
+	            <classpath refid="classpath.all"/>
+        	</javac>
+    </target>
+    
+    <target name="clean" description="Clean up" >
+        <delete dir="${dir.build.java}"/>
+    </target>
+    
+    <target name="run" description="Run the script" depends="compile, input-runargs">
+        <java fork="true"  
+              dir="${dir.build.java}"
+              classname="com.learning.csv.CSVStore" 
+              failonerror="true"
+              classpathref="classpath.cp">
+             <arg line="${user.dir}/${csv.lib}/${args}"/>
+        </java>
+    </target>
+    <target name="input-runargs" unless="args" description="prompts for command line arguments if necessary">
+  <input addProperty="args" message="Type the desired csv file (under ${csv.lib}/): "/>
+</target>
+</project>
