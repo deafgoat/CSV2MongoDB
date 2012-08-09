@@ -33,6 +33,7 @@ public class CSVIterator {
     private String filename;
     private String [] fields;
     private int current;
+    private static final String delimeter  = ",";
     
     public CSVIterator(String filename) throws IOException {
     	setInstanceVariables(filename);
@@ -73,7 +74,7 @@ public class CSVIterator {
     }
 
     public String[] next() throws IOException {
-        String[] row = this.instance.split(",");
+        String[] row = this.instance.split(delimeter);
         if (this.hasNext())
             this.readNextLine();
         return row;
