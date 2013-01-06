@@ -44,7 +44,7 @@ public class CSVIterator {
     	this.fileHandle = openFile(filename);
         this.current = 1;
 
-    	this.fields =  fileHandle.readLine().split(",");
+    	this.fields =  fileHandle.readLine().split(delimeter);
     	this.instance = fileHandle.readLine();
     }
 
@@ -75,8 +75,9 @@ public class CSVIterator {
 
     public String[] next() throws IOException {
         String[] row = this.instance.split(delimeter);
-        if (this.hasNext())
+        if (this.hasNext()) {
             this.readNextLine();
+        }
         return row;
     }
     
